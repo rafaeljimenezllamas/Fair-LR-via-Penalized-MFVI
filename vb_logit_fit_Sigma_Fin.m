@@ -1,4 +1,4 @@
-function [w, V, invV, logdetV, E_a, L, an, bn, xi,vec_a,vec_b] = vb_logit_fit_Sigma_Fin(X, y, z, l, mu, a0, b0,xi0)
+function [w, V, invV, logdetV, E_a, L, an, bn, xi,vec_a,vec_b] = vb_logit_fit_Sigma_Fin(X, y, z, l, a0, b0,xi0)
 %% [w, V, invV, logdetV, E_a, L] = vb_logit_fit(X, y)
 %
 % returns parpameters of a fitted logit model
@@ -102,7 +102,7 @@ for i = 1:max_iter
     E_a = an / bn;
 
     % recompute posterior parameters of w
-    invV = nearestSPD((E_a +mu)* eye(D) + 2 * X' * bsxfun(@times, X, lam_xi) + l*z'*z);
+    invV = nearestSPD(E_a* eye(D) + 2 * X' * bsxfun(@times, X, lam_xi) + l*z'*z);
     V = inv(invV);
     logdetV = - logdet(invV);
     w = V * t_w;
