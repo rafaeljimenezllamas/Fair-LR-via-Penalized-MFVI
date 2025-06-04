@@ -4,7 +4,7 @@ Num=5;
 
 for n=1:Num
     clearvars -except Num n Tasa_Exito_CV_Train_aux Tasa_Exito_CV_Test_aux Dif_CV_Train_aux Dif_CV_Test_aux M_p97_5_TE_Train M_p97_5_TE_Test M_p2_5_TE_Train M_p2_5_TE_Test M_H_beta_Train M_H_beta_Test
-    filename = sprintf('Results_May24_GERMAN_Train_1_CV_%d.mat', n);
+    filename = sprintf('Results_May24_GERMAN_Test_1_CV_%d.mat', n);
     load(filename);
     
 
@@ -112,12 +112,12 @@ for i=1:length(VecL)
 
 end
 
-%save('Results_Abr24_GERMAN_Test_MA_NoRidge_Complete_3.mat')
+%save(''Results_May24_GERMAN_Test_Complete_Final_1.mat')
 
 %% Gráficas
 
 %load('Results_May24_STUDENT_Test_Complete_Final_1.mat')
-load('Results_May24_GERMAN_Test_Complete_Final_1.mat')
+%load('Results_May24_GERMAN_Test_Complete_Final_1.mat')
 
 Lim = length(VecL);
 
