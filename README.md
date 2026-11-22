@@ -1,16 +1,27 @@
-# Fair-Logistic-Regression-via-Penalized-MFVI
+# Fair Logistic Regression via Penalized Mean-Field Variational Inference
 
+Python implementation for the experiments in the accompanying paper.
 
-The code is structured as follows. Code_5 is the main code, which calls other subfunctions. First the data es extracted from Code_1_*. This data is separated in train and test sets by Code_2_fun_CV, then the optimization problem on the whole grid of lambda selected is solved in Code_4_fun_Mu_Final and saved for each fold. To solve the problem on each value of lambda, an additional vb_logit_fit_Sigma_Fin is used inside each Code_4 to actually solve CAVI equations. The predictive distribution is found from vb_logit_pred. Both of these last functions have been modified but based on the originals from Jan Drugowitsch in this repository: https://github.com/DrugowitschLab/VBLinLogit . 
+- `main.py` runs cross-validation for German Credit and Student Performance.
+- `optimizer.py`, `vb_logit_fit.py` and `vb_logit_pred.py` handle hyperparameter selection, CAVI fitting and prediction. The data loaders and `cross_validation.py` prepare the inputs.
+- `fair_mfvi_revised_pipeline.ipynb` also runs ACSIncome experiments. In Jupyter, set `RUN_FRESH` to `True` and run the setup and ACSIncome cells. This runs the current optimizer. The paper's historical ACS fits are represented by the saved results.
+- `graphs.py` draws figures from saved results. `figures/` holds the exact published panels.
 
-If one wants to work with the Student Performance or German Credit dataset, one must use Code_1_Student or Code_1_German.
+## Run
 
-Additionally, in Code_5_Final one can set the number of folds (Num) and the grid of lambda (penalization parameter) for which the problem will be solved.
+Use Python 3.14 in a virtual environment. Run these commands from the repository root.
 
-If it is desired to obtain results for different datasets, one must create a new Code_1. The requisites for this Code_1 is that it must deliver 3 things:
+```sh
+python -m pip install -r requirements.txt
+python main.py --dataset german --results_dir runs/german
+python main.py --dataset student --results_dir runs/student
+python graphs.py
+```
 
-First it must deliver the whole design matrix (denoted by X0 in the code). With dimensions Nx(p+1). Second, it must deliver the vector of observations (denoted by y0 in the code). With dimensions Nx1. Third, it must deliver a vector (denoted by isnotSens in the code) which takes values of 0 or 1. This vector has dimensions Nx1 and for each value i between 1 and N, the i-th value of vector isnotSens must be 1 if the i-th data point is from a member of the non-sensitive class and 0 if it is a member of the sensitive class.
+Fitting can take substantial time. `python graphs.py` redraws the supported figures under `runs/figures/` without fitting. Use `python graphs.py --dataset german --results-dir runs/german` to plot a fresh run.
 
-Afterwards, the train and test set are created in Code_2_fun_CV, as well as the values of z and zT. It is important to note that even though isnotSens is given by a certain Code_1, we only need it so that in Code_2_fun the values of z and zT (z for the train and test set respectively) can be generated. If in reality the vector isnotSens is not known but the value of z and/or zT are known, the code can be modified in turn to bypass this order of creation and use these values. The code is created in this way simply because the data used for the paper facilitated this way of usage.
+## Citation and data
 
-To see the paper results, use Graphs.m and change the name in line 7 "filename = sprintf('Results_May24_GERMAN_Test_1_CV_%d.mat', n);" to "filename = sprintf('Results_May24_Student_Test_1_CV_%d.mat', n);" to find either the German or Student results. 
+Please cite Emilio Carrizosa, Rafael Jiménez-Llamas and Pepa Ramírez-Cobo, *Fair Logistic Regression via Penalized Mean-Field Variational Inference*. The variational Bayesian logistic regression routines build on Jan Drugowitsch's [VBLinLogit](https://github.com/DrugowitschLab/VBLinLogit).
+
+The UCI datasets are [German Credit](https://archive.ics.uci.edu/dataset/144/statlog-german-credit-data) (Hans Hofmann, 1994, processed for this study) and [Student Performance](https://archive.ics.uci.edu/dataset/320/student%2Bperformance) (Paulo Cortez, 2014), both under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The Nevada person file is from the U.S. Census Bureau's [2018 ACS 1-Year PUMS](https://www.census.gov/programs-surveys/acs/microdata/access.2018.html).
